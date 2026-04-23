@@ -7,10 +7,14 @@ class Medico:
         self.nome = nome
         self.inicio = inicio
         self.fim = fim
-        self._agenda = []
+        self.__agenda = []
+
+    @property
+    def agenda(self):
+        return tuple(self.__agenda)
 
     def __contains__(self, consulta_nova: 'Consulta'):
-        for consulta_agendada in self._agenda:
+        for consulta_agendada in self.__agenda:
             if consulta_nova.inicio < consulta_agendada.fim and \
                consulta_agendada.inicio < consulta_nova.fim:
                 return True
@@ -22,7 +26,7 @@ class Medico:
         if consulta in self:
             raise ConflitoHorarioError("O medico ja possui um paciente neste horario.")
 
-        self._agenda.append(consulta)
+        self.__agenda.append(consulta)
         return True
     
 class Consulta:

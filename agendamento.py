@@ -1,4 +1,4 @@
-from datetime import time
+from datetime import time, datetime, timedelta
 
 class Medico:
 
@@ -8,14 +8,15 @@ class Medico:
         self.fim = fim
         self._agenda = []
 
-    def __contains__(self, nova_consulta: 'Consulta'):
+    def __contains__(self, consulta_nova: 'Consulta'):
         for consulta_agendada in self._agenda:
-            if consulta_agendada.horario == nova_consulta.horario:
+            if consulta_nova.inicio < consulta_agendada.fim and \
+               consulta_agendada.inicio < consulta_nova.fim:
                 return True
         return False
 
     def agendar(self, consulta: 'Consulta'):
-        if consulta.horario < self.inicio or consulta.horario >= self.fim:
+        if consulta.inicio < self.inicio or consulta.fim > self.fim:
             raise ValueError("O medico nao esta disponivel neste horario.")
         if consulta in self:
             raise ValueError("O medico ja possui um paciente neste horario.")
@@ -25,7 +26,17 @@ class Medico:
     
 class Consulta:
 
-    def __init__(self, horario: time, medico: Medico, paciente: str):
-        self.horario = horario
+    def __init__(self, data_hora: datetime, medico: Medico, paciente: str):
         self.medico = medico
         self.paciente = paciente
+
+        self.inicio = data_hora.time()
+        self.fim = (data_hora + timedelta(minutes=30)).time()
+
+    @classmethod
+    def criar(cls, horario_str: str, medico: Medico, paciente: str):
+        hoje = datetime.today()
+        data_hora = datetime.strptime(horario_str, "%H:%M").replace(
+            year=hoje.year, month=hoje.month, day=hoje.day
+        )
+        return cls(data_hora, medico, paciente)

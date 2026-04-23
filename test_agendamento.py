@@ -6,24 +6,35 @@ class TestAgendamento(TestCase):
     
     def test_deve_realizar_agendamento(self):
         medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
-        consulta = Consulta(horario=time(9, 0), medico=medico, paciente="Julia")
+        consulta = Consulta.criar("08:00", medico, "Julia")
 
         medico.agendar(consulta)
         self.assertIn(consulta, medico._agenda)
 
     def test_nao_deve_agendar_fora_do_horario(self):
         medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
-        consulta = Consulta(horario=time(14, 0), medico=medico, paciente="Julia")
+        consulta = Consulta.criar("14:00", medico, "Julia")
 
         with self.assertRaises(ValueError):
             medico.agendar(consulta)
 
     def test_nao_deve_permitir_conflito_de_horario(self):
         medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
-        consulta_1 = Consulta(horario=time(10, 0), medico=medico, paciente="Julia")
-        consulta_2 = Consulta(horario=time(10, 0), medico=medico, paciente="Pedro")
+        consulta_1 = Consulta.criar("08:00", medico, "Julia")
+        consulta_2 = Consulta.criar("08:00", medico, "Pedro")
 
         medico.agendar(consulta_1)
 
         with self.assertRaises(ValueError):
             medico.agendar(consulta_2)
+
+    def test_nao_deve_permitir_conflito_de_horario_parcial(self):
+        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
+
+        consulta_1 = Consulta.criar("08:00", medico, "Julia")
+        consulta_2 = Consulta.criar("08:15", medico, "Pedro")
+
+        medico.agendar(consulta_1)
+
+        with self.assertRaises(ValueError):
+            medico.agendar(consulta_2)    

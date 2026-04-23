@@ -9,6 +9,9 @@ class Medico:
         self._agenda = []
 
     def agendar(self, consulta: 'Consulta'):
+        if consulta.horario < self.inicio or consulta.horario >= self.fim:
+            raise ValueError("O medico nao esta disponivel neste horario.")
+        
         self._agenda.append(consulta)
         return True
     
@@ -18,5 +21,3 @@ class Consulta:
         self.horario = horario
         self.medico = medico
         self.paciente = paciente
-    
-

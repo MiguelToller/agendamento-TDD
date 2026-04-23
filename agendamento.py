@@ -1,4 +1,5 @@
 from datetime import time, datetime, timedelta
+from exceptions import HorarioIndisponivelError, ConflitoHorarioError
 
 class Medico:
 
@@ -17,9 +18,9 @@ class Medico:
 
     def agendar(self, consulta: 'Consulta'):
         if consulta.inicio < self.inicio or consulta.fim > self.fim:
-            raise ValueError("O medico nao esta disponivel neste horario.")
+            raise HorarioIndisponivelError("O medico nao atende neste horario.")
         if consulta in self:
-            raise ValueError("O medico ja possui um paciente neste horario.")
+            raise ConflitoHorarioError("O medico ja possui um paciente neste horario.")
 
         self._agenda.append(consulta)
         return True

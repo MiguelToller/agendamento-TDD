@@ -1,6 +1,7 @@
 from unittest import TestCase
 from datetime import time
 from agendamento import Medico, Consulta
+from exceptions import HorarioIndisponivelError, ConflitoHorarioError
 
 class TestAgendamento(TestCase):
     
@@ -15,7 +16,7 @@ class TestAgendamento(TestCase):
         medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
         consulta = Consulta.criar("14:00", medico, "Julia")
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(HorarioIndisponivelError):
             medico.agendar(consulta)
 
     def test_nao_deve_permitir_conflito_de_horario(self):
@@ -25,7 +26,7 @@ class TestAgendamento(TestCase):
 
         medico.agendar(consulta_1)
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ConflitoHorarioError):
             medico.agendar(consulta_2)
 
     def test_nao_deve_permitir_conflito_de_horario_parcial(self):
@@ -36,5 +37,5 @@ class TestAgendamento(TestCase):
 
         medico.agendar(consulta_1)
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ConflitoHorarioError):
             medico.agendar(consulta_2)    

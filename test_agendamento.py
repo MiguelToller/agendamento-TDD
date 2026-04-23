@@ -17,3 +17,13 @@ class TestAgendamento(TestCase):
 
         with self.assertRaises(ValueError):
             medico.agendar(consulta)
+
+    def test_nao_deve_permitir_conflito_de_horario(self):
+        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
+        consulta_1 = Consulta(horario=time(10, 0), medico=medico, paciente="Julia")
+        consulta_2 = Consulta(horario=time(10, 0), medico=medico, paciente="Pedro")
+
+        medico.agendar(consulta_1)
+
+        with self.assertRaises(ValueError):
+            medico.agendar(consulta_2)

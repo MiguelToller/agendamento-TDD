@@ -9,3 +9,7 @@ class HorarioIndisponivelError(AgendamentoError):
 class ConflitoHorarioError(AgendamentoError):
     """Lancada quando existe uma consulta no horario solicitado."""
     pass
+
+class TurnoInvalidoError(AgendamentoError):
+    """Lancada quando o horario de fim de turno e menor ou igual que o de inicio."""
+    pass

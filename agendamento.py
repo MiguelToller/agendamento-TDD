@@ -1,9 +1,14 @@
 from datetime import time, datetime, timedelta
-from exceptions import HorarioIndisponivelError, ConflitoHorarioError
+from exceptions import HorarioIndisponivelError, ConflitoHorarioError, TurnoInvalidoError
 
 class Medico:
 
     def __init__(self, nome: str, inicio: time, fim: time):
+        if inicio > fim:
+            raise TurnoInvalidoError("O termino do turno nao pode ser anterior ao inicio.")
+        if inicio == fim:
+            raise TurnoInvalidoError("O turno nao pode ter duracao de zero minutos.")
+        
         self.nome = nome
         self.inicio = inicio
         self.fim = fim

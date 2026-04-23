@@ -1,7 +1,7 @@
 from unittest import TestCase
 from datetime import time
 from agendamento import Medico, Consulta
-from exceptions import HorarioIndisponivelError, ConflitoHorarioError
+from exceptions import HorarioIndisponivelError, ConflitoHorarioError, TurnoInvalidoError
 
 class TestAgendamento(TestCase):
     
@@ -39,3 +39,11 @@ class TestAgendamento(TestCase):
 
         with self.assertRaises(ConflitoHorarioError):
             medico.agendar(consulta_2)    
+
+    def test_nao_deve_criar_medico_com_turno_invertido(self):
+        with self.assertRaises(TurnoInvalidoError):
+            Medico(nome="Gabriel", inicio=time(12, 0), fim=time(8, 0))
+
+    def test_nao_deve_criar_medico_com_turno_zerado(self):
+        with self.assertRaises(TurnoInvalidoError):
+            Medico(nome="Gabriel", inicio=time(8, 0), fim=time(8, 0))

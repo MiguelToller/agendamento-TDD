@@ -12,6 +12,16 @@ class TestAgendamento(TestCase):
         medico.agendar(consulta)
         self.assertIn(consulta, medico.agenda)
 
+    def test_deve_permitir_consultas_em_sequencia(self):
+        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
+        consulta_1 = Consulta.criar("08:00", medico, "Julia")
+        consulta_2 = Consulta.criar("08:30", medico, "Pedro")
+
+        medico.agendar(consulta_1)
+        medico.agendar(consulta_2)
+
+        self.assertIn(consulta_2, medico.agenda)
+
     def test_nao_deve_agendar_fora_do_horario(self):
         medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
         consulta = Consulta.criar("14:00", medico, "Julia")

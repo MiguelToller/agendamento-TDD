@@ -3,7 +3,7 @@ from exceptions import HorarioIndisponivelError, ConflitoHorarioError, TurnoInva
 
 class Medico:
 
-    def __init__(self, nome: str, inicio: time, fim: time):
+    def __init__(self, nome: str, inicio: time, fim: time) -> None:
         if inicio > fim:
             raise TurnoInvalidoError("O termino do turno nao pode ser anterior ao inicio.")
         if inicio == fim:
@@ -15,17 +15,17 @@ class Medico:
         self.__agenda = []
 
     @property
-    def agenda(self):
+    def agenda(self) -> tuple['Consulta']:
         return tuple(self.__agenda)
 
-    def __contains__(self, consulta_nova: 'Consulta'):
+    def __contains__(self, consulta_nova: 'Consulta') -> bool:
         for consulta_agendada in self.__agenda:
             if consulta_nova.inicio < consulta_agendada.fim and \
                consulta_agendada.inicio < consulta_nova.fim:
                 return True
         return False
 
-    def agendar(self, consulta: 'Consulta'):
+    def agendar(self, consulta: 'Consulta') -> bool:
         if consulta.inicio < self.inicio or consulta.fim > self.fim:
             raise HorarioIndisponivelError("O medico nao atende neste horario.")
         if consulta in self:
@@ -36,7 +36,7 @@ class Medico:
     
 class Consulta:
 
-    def __init__(self, data_hora: datetime, medico: Medico, paciente: str):
+    def __init__(self, data_hora: datetime, medico: Medico, paciente: str) -> None:
         self.medico = medico
         self.paciente = paciente
 
@@ -44,7 +44,7 @@ class Consulta:
         self.fim = (data_hora + timedelta(minutes=30)).time()
 
     @classmethod
-    def criar(cls, horario_str: str, medico: Medico, paciente: str):
+    def criar(cls, horario_str: str, medico: Medico, paciente: str) -> 'Consulta':
         hoje = datetime.today()
         data_hora = datetime.strptime(horario_str, "%H:%M").replace(
             year=hoje.year, month=hoje.month, day=hoje.day

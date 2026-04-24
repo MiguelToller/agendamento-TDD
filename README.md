@@ -44,7 +44,7 @@ Atualmente, 22% do tempo das secretárias em clínicas parceiras é gasto resolv
 
 ### 4. Diretrizes Técnicas e Regras do Desafio
 
-* **Test-Driven Development (TDD):** Esta é uma evolução do desafio anterior, portanto, as mesmas regras se aplicam. O desenvolvimento deve ser guiado por testes desde a primeira linha de código.
-* **Modelagem e Arquitetura:** Estruture e desenhe a solução antes de iniciar a codificação. É altamente recomendado o estudo e a aplicação de **Diagramas C4** para ilustrar a arquitetura do projeto.
-
-* **Princípios SÓLIDOS:** Não se esqueça de aplicar os conceitos já vistos anteriormente no curso/desafio, com forte ênfase em **Design By Contract** (garantia de pré-condições, pós-condições e invariantes) e **Encapsulamento** (proteção do estado interno das classes).
+* **TDD (Test-Driven Development):** É obrigatório o desenvolvimento guiado por testes. O código de produção só deve ser escrito após a existência de um teste que falhe, garantindo que cada regra de negócio seja validada desde a sua concepção.
+* **Modelagem C4:** Recomenda-se o desenho da solução utilizando os níveis de Contexto e Componentes do modelo C4. Isso garante que a estrutura do sistema seja compreendida antes da execução.
+* **Design by Contract (DbC):** O software deve operar sob contratos claros de pré-condições, pós-condições e invariantes. Utilize a estratégia fail-fast para garantir que o sistema não processe dados em estado inválido.
+* **Encapsulamento e Proteção de Estado:** O estado interno dos objetos deve ser protegido. Utilize propriedades e tipos imutáveis (como tuplas para coleções) para evitar o vazamento de lógica de domínio e garantir que as regras de negócio sejam centralizadas em seus respectivos objetos.

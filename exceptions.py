@@ -1,15 +1,11 @@
-class AgendamentoError(Exception):
-    """Classe base para os erros de agendamento."""
-    pass
-
-class HorarioIndisponivelError(AgendamentoError):
+class HorarioIndisponivelError(Exception):
     """Lancada quando a consulta e fora do expediente do medico."""
     pass
 
-class ConflitoHorarioError(AgendamentoError):
+class ConflitoHorarioError(Exception):
     """Lancada quando existe uma consulta no horario solicitado."""
     pass
 
-class TurnoInvalidoError(AgendamentoError):
+class TurnoInvalidoError(Exception):
     """Lancada quando o horario de fim de turno e menor ou igual que o de inicio."""
     pass

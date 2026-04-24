@@ -43,6 +43,10 @@ class Consulta:
         self.inicio = data_hora.time()
         self.fim = (data_hora + timedelta(minutes=30)).time()
 
+    def __str__(self) -> str:
+        hora_formatada = self.inicio.strftime("%H:%M")
+        return f"Consulta de {self.paciente} com Dr(a). {self.medico.nome} as {hora_formatada}"
+
     @classmethod
     def criar(cls, horario_str: str, medico: Medico, paciente: str) -> 'Consulta':
         hoje = datetime.today()

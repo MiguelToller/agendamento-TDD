@@ -19,6 +19,13 @@ class TestAgendamento(TestCase):
         with self.assertRaises(HorarioIndisponivelError):
             medico.agendar(consulta)
 
+    def test_nao_deve_agendar_passando_do_horario_fim(self):
+        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
+        consulta = Consulta.criar("11:45", medico, "Julia")
+
+        with self.assertRaises(HorarioIndisponivelError):
+            medico.agendar(consulta)
+
     def test_nao_deve_permitir_conflito_de_horario(self):
         medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
         consulta_1 = Consulta.criar("08:00", medico, "Julia")

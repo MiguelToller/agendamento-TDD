@@ -60,6 +60,12 @@ class TestAgendamento(TestCase):
         consulta_encontrada = medico.buscar_consulta(consulta.id)
         self.assertEqual(consulta_encontrada.paciente, "Julia")
 
+    def test_nao_deve_encontrar_consulta_inexistente(self):
+        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
+        
+        with self.assertRaises(ConsultaNaoEncontradaError):
+            medico.buscar_consulta("1234")
+
     def test_nao_deve_cancelar_consulta_inexistente(self):
         medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
 

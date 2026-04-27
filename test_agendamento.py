@@ -12,6 +12,15 @@ class TestAgendamento(TestCase):
         medico.agendar(consulta)
         self.assertIn(consulta, medico.agenda)
 
+    def test_deve_cancelar_consulta_agendada(self):
+        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
+        consulta = Consulta.criar("08:00", medico, "Julia")
+
+        medico.agendar(consulta)
+        medico.cancelar(consulta)
+
+        self.assertNotIn(consulta, medico.agenda)
+
     def test_deve_permitir_consultas_em_sequencia(self):
         medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
         consulta_1 = Consulta.criar("08:00", medico, "Julia")
@@ -22,14 +31,17 @@ class TestAgendamento(TestCase):
 
         self.assertIn(consulta_2, medico.agenda)
 
-    def test_deve_cancelar_consulta_agendada(self):
+    def test_deve_permitir_agendar_apos_cancelamento(self):
         medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
-        consulta = Consulta.criar("08:00", medico, "Julia")
+        consulta_julia = Consulta.criar("08:00", medico, "Julia")
+        consulta_pedro = Consulta.criar("08:00", medico, "Pedro")
 
-        medico.agendar(consulta)
-        medico.cancelar(consulta)
+        medico.agendar(consulta_julia)
+        medico.cancelar(consulta_julia)
+        medico.agendar(consulta_pedro)
 
-        self.assertNotIn(consulta, medico.agenda)
+        self.assertNotIn(consulta_julia, medico.agenda)
+        self.assertIn(consulta_pedro, medico.agenda)
 
     def test_nao_deve_cancelar_consulta_inexistente(self):
         medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))

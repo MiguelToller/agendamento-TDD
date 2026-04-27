@@ -1,7 +1,7 @@
 from unittest import TestCase
 from datetime import time
-from agendamento import Medico, Consulta
-from exceptions import (
+from src.agendamento import Medico, Consulta
+from src.exceptions import (
     HorarioIndisponivelError,
     ConflitoHorarioError,
     TurnoInvalidoError,

@@ -1,5 +1,5 @@
 from datetime import time, datetime, timedelta
-from exceptions import (
+from src.exceptions import (
     HorarioIndisponivelError,
     ConflitoHorarioError,
     TurnoInvalidoError,

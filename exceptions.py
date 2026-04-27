@@ -9,3 +9,7 @@ class ConflitoHorarioError(Exception):
 class TurnoInvalidoError(Exception):
     """Lancada quando o horario de fim de turno e menor ou igual que o de inicio."""
     pass
+
+class ConsultaNaoEncontradaError(Exception):
+    """Lancada quando uma consulta nao existe ou nao conseguiu ser acessada."""
+    pass

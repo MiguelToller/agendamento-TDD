@@ -22,6 +22,15 @@ class TestAgendamento(TestCase):
 
         self.assertIn(consulta_2, medico.agenda)
 
+    def test_deve_cancelar_consulta_agendada(self):
+        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
+        consulta = Consulta.criar("08:00", medico, "Julia")
+
+        medico.agendar(consulta)
+        medico.cancelar(consulta)
+
+        self.assertNotIn(consulta, medico.agenda)
+
     def test_nao_deve_agendar_fora_do_horario(self):
         medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
         consulta = Consulta.criar("14:00", medico, "Julia")

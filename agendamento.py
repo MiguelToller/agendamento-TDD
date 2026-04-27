@@ -1,5 +1,5 @@
 from datetime import time, datetime, timedelta
-from exceptions import HorarioIndisponivelError, ConflitoHorarioError, TurnoInvalidoError
+from exceptions import HorarioIndisponivelError, ConflitoHorarioError, TurnoInvalidoError, ConsultaNaoEncontradaError
 
 class Medico:
 
@@ -35,6 +35,13 @@ class Medico:
             raise ConflitoHorarioError("O medico ja possui um paciente neste horario.")
 
         self.__agenda.append(consulta)
+        return True
+    
+    def cancelar(self, consulta: 'Consulta') -> bool:
+        if consulta not in self.__agenda:
+            raise ConsultaNaoEncontradaError("Esta consulta nao foi encontrada na agenda do medico.")
+        
+        self.__agenda.remove(consulta)
         return True
     
 class Consulta:

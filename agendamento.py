@@ -1,5 +1,6 @@
 from datetime import time, datetime, timedelta
 from exceptions import HorarioIndisponivelError, ConflitoHorarioError, TurnoInvalidoError, ConsultaNaoEncontradaError
+import uuid
 
 class Medico:
 
@@ -38,20 +39,22 @@ class Medico:
         return True
     
     def cancelar(self, consulta: 'Consulta') -> bool:
-        if consulta not in self.__agenda:
-            raise ConsultaNaoEncontradaError("Esta consulta nao foi encontrada na agenda do medico.")
         
-        self.__agenda.remove(consulta)
-        return True
+        for consulta in self.__agenda:
+            if consulta.id == consulta.id:
+                self.__agenda.remove(consulta)
+                return True
+        raise ConsultaNaoEncontradaError("Esta consulta nao foi encontrada na agenda do medico.")
     
 class Consulta:
 
     DURACAO_CONSULTA_MIN = 30
 
     def __init__(self, data_hora: datetime, medico: Medico, paciente: str) -> None:
+        self.id = str(uuid.uuid4())
+        
         self.medico = medico
         self.paciente = paciente
-
         self.inicio = data_hora
         self.fim = data_hora + timedelta(minutes=self.DURACAO_CONSULTA_MIN)
 

@@ -46,6 +46,13 @@ class Medico:
                 return True
         raise ConsultaNaoEncontradaError("Esta consulta nao foi encontrada na agenda do medico.")
     
+    def buscar_consulta(self, consulta_id: str) -> 'Consulta':
+
+        for consulta in self.__agenda:
+            if consulta.id == consulta_id:
+                return consulta
+        raise ConsultaNaoEncontradaError("Consulta nao encontrada no sistema.")
+    
 class Consulta:
 
     DURACAO_CONSULTA_MIN = 30

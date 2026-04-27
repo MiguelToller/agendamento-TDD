@@ -36,12 +36,14 @@ class Medico:
     
 class Consulta:
 
+    DURACAO_CONSULTA_MIN = 30
+
     def __init__(self, data_hora: datetime, medico: Medico, paciente: str) -> None:
         self.medico = medico
         self.paciente = paciente
 
         self.inicio = data_hora.time()
-        self.fim = (data_hora + timedelta(minutes=30)).time()
+        self.fim = data_hora + timedelta(minutes=self.self.DURACAO_CONSULTA_MIN)
 
     def __str__(self) -> str:
         hora_formatada = self.inicio.strftime("%H:%M")

@@ -26,7 +26,10 @@ class Medico:
         return False
 
     def agendar(self, consulta: 'Consulta') -> bool:
-        if consulta.inicio < self.inicio or consulta.fim > self.fim:
+        hora_inicio_consulta = consulta.inicio.time()
+        hora_fim_consulta = consulta.fim.time()
+
+        if hora_inicio_consulta < self.inicio or hora_fim_consulta > self.fim:
             raise HorarioIndisponivelError("O medico nao atende neste horario.")
         if consulta in self:
             raise ConflitoHorarioError("O medico ja possui um paciente neste horario.")
@@ -42,12 +45,13 @@ class Consulta:
         self.medico = medico
         self.paciente = paciente
 
-        self.inicio = data_hora.time()
-        self.fim = data_hora + timedelta(minutes=self.self.DURACAO_CONSULTA_MIN)
+        self.inicio = data_hora
+        self.fim = data_hora + timedelta(minutes=self.DURACAO_CONSULTA_MIN)
 
     def __str__(self) -> str:
-        hora_formatada = self.inicio.strftime("%H:%M")
-        return f"Consulta de {self.paciente} com Dr(a). {self.medico.nome} as {hora_formatada}"
+        data_formatada = self.inicio.strftime("%d/%m/%Y")
+        hora_formatada = self.inicio.strftime("%H:%M")  
+        return f"Consulta de {self.paciente} no dia {data_formatada} as {hora_formatada}"
 
     @classmethod
     def criar(cls, horario_str: str, medico: Medico, paciente: str) -> 'Consulta':

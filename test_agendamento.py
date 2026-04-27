@@ -43,6 +43,15 @@ class TestAgendamento(TestCase):
         self.assertNotIn(consulta_julia, medico.agenda)
         self.assertIn(consulta_pedro, medico.agenda)
 
+    def test_deve_retornar_texto_formatado_da_consulta(self):
+        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
+        consulta = Consulta.criar("08:00", medico, "Julia")
+
+        texto = str(consulta)
+
+        self.assertIn("Consulta de Julia", texto)
+        self.assertIn("as 08:00", texto)
+
     def test_nao_deve_cancelar_consulta_inexistente(self):
         medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
 

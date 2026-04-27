@@ -38,10 +38,10 @@ class Medico:
         self.__agenda.append(consulta)
         return True
     
-    def cancelar(self, consulta: 'Consulta') -> bool:
+    def cancelar(self, consulta_id: str) -> bool:
         
         for consulta in self.__agenda:
-            if consulta.id == consulta.id:
+            if consulta.id == consulta_id:
                 self.__agenda.remove(consulta)
                 return True
         raise ConsultaNaoEncontradaError("Esta consulta nao foi encontrada na agenda do medico.")

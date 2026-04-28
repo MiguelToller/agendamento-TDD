@@ -4,13 +4,21 @@ from src.exceptions import (
     ConflitoHorarioError,
     TurnoInvalidoError,
     ConsultaNaoEncontradaError,
+    DiaIndisponivelError,
 )
 import uuid
+from src.enums import DiaSemana
 
 
 class Medico:
 
-    def __init__(self, nome: str, inicio: time, fim: time) -> None:
+    def __init__(
+        self,
+        nome: str,
+        inicio: time,
+        fim: time,
+        dias_atendimento: list[DiaSemana] = None,
+    ) -> None:
         if inicio > fim:
             raise TurnoInvalidoError(
                 "O termino do turno nao pode ser anterior ao inicio."
@@ -21,6 +29,18 @@ class Medico:
         self.nome = nome
         self.inicio = inicio
         self.fim = fim
+
+        if dias_atendimento is None:
+            self.dias_atendimento = [
+                DiaSemana.SEGUNDA,
+                DiaSemana.TERCA,
+                DiaSemana.QUARTA,
+                DiaSemana.QUINTA,
+                DiaSemana.SEXTA,
+            ]
+        else:
+            self.dias_atendimento = dias_atendimento
+
         self.__agenda = []
 
     @property
@@ -39,11 +59,14 @@ class Medico:
     def agendar(self, consulta: "Consulta") -> bool:
         hora_inicio_consulta = consulta.inicio.time()
         hora_fim_consulta = consulta.fim.time()
+        dia_da_semana = DiaSemana(consulta.inicio.weekday())
 
         if hora_inicio_consulta < self.inicio or hora_fim_consulta > self.fim:
             raise HorarioIndisponivelError("O medico nao atende neste horario.")
         if consulta in self:
             raise ConflitoHorarioError("O medico ja possui um paciente neste horario.")
+        if dia_da_semana not in self.dias_atendimento:
+            raise DiaIndisponivelError("O medico nao atende neste dia da semana.")
 
         self.__agenda.append(consulta)
         return True

@@ -20,3 +20,9 @@ class ConsultaNaoEncontradaError(Exception):
     """Lancada quando uma consulta nao existe ou nao conseguiu ser acessada."""
 
     pass
+
+
+class DiaIndisponivelError(Exception):
+    """Lancada quando uma consulta e marcada em um dia de folga."""
+
+    pass

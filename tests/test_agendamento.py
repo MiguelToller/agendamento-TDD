@@ -1,12 +1,14 @@
 from unittest import TestCase
-from datetime import time
+from datetime import time, datetime
 from src.agendamento import Medico, Consulta
 from src.exceptions import (
     HorarioIndisponivelError,
     ConflitoHorarioError,
     TurnoInvalidoError,
     ConsultaNaoEncontradaError,
+    DiaIndisponivelError,
 )
+from src.enums import DiaSemana
 
 
 class TestAgendamento(TestCase):
@@ -120,3 +122,17 @@ class TestAgendamento(TestCase):
     def test_nao_deve_criar_medico_com_turno_zerado(self):
         with self.assertRaises(TurnoInvalidoError):
             Medico(nome="Gabriel", inicio=time(8, 0), fim=time(8, 0))
+
+    def test_nao_deve_agendar_em_dia_de_folga(self):
+        medico = Medico(
+            nome="Gabriel",
+            inicio=time(8, 0),
+            fim=time(12, 0),
+            dias_atendimento=[DiaSemana.SEGUNDA, DiaSemana.QUARTA, DiaSemana.SEXTA],
+        )
+
+        data_sabado = datetime(2026, 5, 2, 10, 0)
+        consulta_sabado = Consulta(data_sabado, medico, "Julia")
+
+        with self.assertRaises(DiaIndisponivelError):
+            medico.agendar(consulta_sabado)

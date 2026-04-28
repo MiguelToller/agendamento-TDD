@@ -10,18 +10,27 @@ from src.exceptions import (
 )
 from src.enums import DiaSemana
 
+TODOS_OS_DIAS = [
+    DiaSemana.SEGUNDA,
+    DiaSemana.TERCA, 
+    DiaSemana.QUARTA, 
+    DiaSemana.QUINTA, 
+    DiaSemana.SEXTA, 
+    DiaSemana.SABADO, 
+    DiaSemana.DOMINGO
+]
 
 class TestAgendamento(TestCase):
 
     def test_deve_realizar_agendamento(self):
-        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
+        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0), dias_atendimento=TODOS_OS_DIAS)
         consulta = Consulta.criar("08:00", medico, "Julia")
 
         medico.agendar(consulta)
         self.assertIn(consulta, medico.agenda)
 
     def test_deve_cancelar_consulta_agendada(self):
-        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
+        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0), dias_atendimento=TODOS_OS_DIAS)
         consulta = Consulta.criar("08:00", medico, "Julia")
 
         medico.agendar(consulta)
@@ -30,7 +39,7 @@ class TestAgendamento(TestCase):
         self.assertNotIn(consulta, medico.agenda)
 
     def test_deve_permitir_consultas_em_sequencia(self):
-        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
+        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0), dias_atendimento=TODOS_OS_DIAS)
         consulta_1 = Consulta.criar("08:00", medico, "Julia")
         consulta_2 = Consulta.criar("08:30", medico, "Pedro")
 
@@ -40,7 +49,7 @@ class TestAgendamento(TestCase):
         self.assertIn(consulta_2, medico.agenda)
 
     def test_deve_permitir_agendar_apos_cancelamento(self):
-        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
+        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0), dias_atendimento=TODOS_OS_DIAS)
         consulta_julia = Consulta.criar("08:00", medico, "Julia")
         consulta_pedro = Consulta.criar("08:00", medico, "Pedro")
 
@@ -52,7 +61,7 @@ class TestAgendamento(TestCase):
         self.assertIn(consulta_pedro, medico.agenda)
 
     def test_deve_retornar_texto_formatado_da_consulta(self):
-        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
+        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0), dias_atendimento=TODOS_OS_DIAS)
         consulta = Consulta.criar("08:00", medico, "Julia")
 
         texto = str(consulta)
@@ -61,7 +70,7 @@ class TestAgendamento(TestCase):
         self.assertIn("as 08:00", texto)
 
     def test_deve_encontrar_consulta_pelo_id(self):
-        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
+        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0), dias_atendimento=TODOS_OS_DIAS)
         consulta = Consulta.criar("08:00", medico, "Julia")
         medico.agendar(consulta)
 
@@ -69,33 +78,33 @@ class TestAgendamento(TestCase):
         self.assertEqual(consulta_encontrada.paciente, "Julia")
 
     def test_nao_deve_encontrar_consulta_inexistente(self):
-        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
+        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0), dias_atendimento=TODOS_OS_DIAS)
 
         with self.assertRaises(ConsultaNaoEncontradaError):
             medico.buscar_consulta("1234")
 
     def test_nao_deve_cancelar_consulta_inexistente(self):
-        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
+        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0), dias_atendimento=TODOS_OS_DIAS)
 
         with self.assertRaises(ConsultaNaoEncontradaError):
             medico.cancelar("id-falso-12345")
 
     def test_nao_deve_agendar_fora_do_horario(self):
-        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
+        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0), dias_atendimento=TODOS_OS_DIAS)
         consulta = Consulta.criar("14:00", medico, "Julia")
 
         with self.assertRaises(HorarioIndisponivelError):
             medico.agendar(consulta)
 
     def test_nao_deve_agendar_passando_do_horario_fim(self):
-        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
+        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0), dias_atendimento=TODOS_OS_DIAS)
         consulta = Consulta.criar("11:45", medico, "Julia")
 
         with self.assertRaises(HorarioIndisponivelError):
             medico.agendar(consulta)
 
     def test_nao_deve_permitir_conflito_de_horario(self):
-        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
+        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0), dias_atendimento=TODOS_OS_DIAS)
         consulta_1 = Consulta.criar("08:00", medico, "Julia")
         consulta_2 = Consulta.criar("08:00", medico, "Pedro")
 
@@ -105,7 +114,7 @@ class TestAgendamento(TestCase):
             medico.agendar(consulta_2)
 
     def test_nao_deve_permitir_conflito_de_horario_parcial(self):
-        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0))
+        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0), dias_atendimento=TODOS_OS_DIAS)
 
         consulta_1 = Consulta.criar("08:00", medico, "Julia")
         consulta_2 = Consulta.criar("08:15", medico, "Pedro")
@@ -117,11 +126,11 @@ class TestAgendamento(TestCase):
 
     def test_nao_deve_criar_medico_com_turno_invertido(self):
         with self.assertRaises(TurnoInvalidoError):
-            Medico(nome="Gabriel", inicio=time(12, 0), fim=time(8, 0))
+            Medico(nome="Gabriel", inicio=time(12, 0), fim=time(8, 0), dias_atendimento=TODOS_OS_DIAS)
 
     def test_nao_deve_criar_medico_com_turno_zerado(self):
         with self.assertRaises(TurnoInvalidoError):
-            Medico(nome="Gabriel", inicio=time(8, 0), fim=time(8, 0))
+            Medico(nome="Gabriel", inicio=time(8, 0), fim=time(8, 0), dias_atendimento=TODOS_OS_DIAS)
 
     def test_nao_deve_agendar_em_dia_de_folga(self):
         medico = Medico(
@@ -136,3 +145,4 @@ class TestAgendamento(TestCase):
 
         with self.assertRaises(DiaIndisponivelError):
             medico.agendar(consulta_sabado)
+            

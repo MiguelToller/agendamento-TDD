@@ -77,6 +77,21 @@ class TestAgendamento(TestCase):
         consulta_encontrada = medico.buscar_consulta(consulta.id)
         self.assertEqual(consulta_encontrada.paciente, "Julia")
 
+    def test_deve_permitir_consultas_no_mesmo_horario_em_dias_diferentes(self):
+        medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0), dias_atendimento=TODOS_OS_DIAS)
+
+        data_terca = datetime(2026, 4, 28, 8, 0)
+        data_quarta = datetime(2026, 4, 29, 8, 0)
+
+        consulta_terca = Consulta(data_terca, medico, "Julia")
+        consulta_quarta = Consulta(data_quarta, medico, "Pedro")
+
+        medico.agendar(consulta_terca)
+        medico.agendar(consulta_quarta)
+
+        self.assertIn(consulta_terca, medico.agenda)
+        self.assertIn(consulta_quarta, medico.agenda)
+
     def test_nao_deve_encontrar_consulta_inexistente(self):
         medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0), dias_atendimento=TODOS_OS_DIAS)
 
@@ -145,4 +160,3 @@ class TestAgendamento(TestCase):
 
         with self.assertRaises(DiaIndisponivelError):
             medico.agendar(consulta_sabado)
-            

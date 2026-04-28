@@ -10,19 +10,21 @@ import uuid
 from src.enums import DiaSemana
 
 
+class Paciente:
+
+    def __init__(self, nome: str, cpf: str, telefone: str):
+        self.id = uuid.uuid4()
+        self.nome = nome
+        self.cpf = cpf
+        self.telefone = telefone
+
+
 class Medico:
 
-    def __init__(
-        self,
-        nome: str,
-        inicio: time,
-        fim: time,
-        dias_atendimento: list[DiaSemana] = None,
-    ) -> None:
+    def __init__(self, nome: str, inicio: time, fim: time, dias_atendimento: list[DiaSemana] = None) -> None:
+
         if inicio > fim:
-            raise TurnoInvalidoError(
-                "O termino do turno nao pode ser anterior ao inicio."
-            )
+            raise TurnoInvalidoError("O termino do turno nao pode ser anterior ao inicio.")
         if inicio == fim:
             raise TurnoInvalidoError("O turno nao pode ter duracao de zero minutos.")
 
@@ -49,10 +51,7 @@ class Medico:
 
     def __contains__(self, consulta_nova: "Consulta") -> bool:
         for consulta_agendada in self.__agenda:
-            if (
-                consulta_nova.inicio < consulta_agendada.fim
-                and consulta_agendada.inicio < consulta_nova.fim
-            ):
+            if consulta_nova.inicio < consulta_agendada.fim and consulta_agendada.inicio < consulta_nova.fim:
                 return True
         return False
 
@@ -77,9 +76,7 @@ class Medico:
             if consulta.id == consulta_id:
                 self.__agenda.remove(consulta)
                 return True
-        raise ConsultaNaoEncontradaError(
-            "Esta consulta nao foi encontrada na agenda do medico."
-        )
+        raise ConsultaNaoEncontradaError("Esta consulta nao foi encontrada na agenda do medico.")
 
     def buscar_consulta(self, consulta_id: str) -> "Consulta":
 
@@ -93,9 +90,8 @@ class Consulta:
 
     DURACAO_CONSULTA_MIN = 30
 
-    def __init__(self, data_hora: datetime, medico: Medico, paciente: str) -> None:
+    def __init__(self, data_hora: datetime, medico: Medico, paciente: Paciente) -> None:
         self.id = str(uuid.uuid4())
-
         self.medico = medico
         self.paciente = paciente
         self.inicio = data_hora
@@ -104,14 +100,10 @@ class Consulta:
     def __str__(self) -> str:
         data_formatada = self.inicio.strftime("%d/%m/%Y")
         hora_formatada = self.inicio.strftime("%H:%M")
-        return (
-            f"Consulta de {self.paciente} no dia {data_formatada} as {hora_formatada}"
-        )
+        return f"Consulta de {self.paciente.nome} no dia {data_formatada} as {hora_formatada}"
 
     @classmethod
-    def criar(cls, horario_str: str, medico: Medico, paciente: str) -> "Consulta":
+    def criar(cls, horario_str: str, medico: Medico, paciente: Paciente) -> "Consulta":
         hoje = datetime.today()
-        data_hora = datetime.strptime(horario_str, "%H:%M").replace(
-            year=hoje.year, month=hoje.month, day=hoje.day
-        )
+        data_hora = datetime.strptime(horario_str, "%H:%M").replace(year=hoje.year, month=hoje.month, day=hoje.day)
         return cls(data_hora, medico, paciente)

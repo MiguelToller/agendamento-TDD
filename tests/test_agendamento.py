@@ -92,6 +92,18 @@ class TestAgendamento(TestCase):
         self.assertIn(consulta_terca, medico.agenda)
         self.assertIn(consulta_quarta, medico.agenda)
 
+    def test_deve_criar_medico_com_dias_padrao_quando_nao_informado_agenda(self):
+        medico = Medico(nome="Gabriel", inicio=time(8,0), fim=time(12,0))
+
+        dias_padrao = [
+            DiaSemana.SEGUNDA,
+            DiaSemana.TERCA,
+            DiaSemana.QUARTA,
+            DiaSemana.QUINTA,
+            DiaSemana.SEXTA
+        ]
+        self.assertEqual(medico.dias_atendimento, dias_padrao)
+
     def test_nao_deve_encontrar_consulta_inexistente(self):
         medico = Medico(nome="Gabriel", inicio=time(8, 0), fim=time(12, 0), dias_atendimento=TODOS_OS_DIAS)
 

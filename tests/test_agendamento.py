@@ -77,7 +77,7 @@ class TestAgendamento(TestCase):
         self.medico.agendar(consulta)
 
         consulta_encontrada = self.medico.buscar_consulta(consulta.id)
-        self.assertEqual(consulta_encontrada.paciente, "Julia")
+        self.assertEqual(consulta_encontrada.paciente.nome, "Julia")
 
     def test_deve_permitir_consultas_no_mesmo_horario_em_dias_diferentes(self):
         data_terca = datetime(2026, 4, 28, 8, 0)

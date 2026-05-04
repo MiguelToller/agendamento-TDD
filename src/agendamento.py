@@ -21,7 +21,7 @@ class Paciente:
 
 class Medico:
 
-    def __init__(self, nome: str, inicio: time, fim: time, dias_atendimento: list[DiaSemana] = None) -> None:
+    def __init__(self, nome: str, inicio: time, fim: time, dias_atendimento: list[DiaSemana] | None = None) -> None:
 
         if inicio > fim:
             raise TurnoInvalidoError("O termino do turno nao pode ser anterior ao inicio.")

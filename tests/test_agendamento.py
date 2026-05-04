@@ -63,6 +63,12 @@ class TestAgendamento(TestCase):
         self.assertNotIn(consulta_julia, self.medico.agenda)
         self.assertIn(consulta_pedro, self.medico.agenda)
 
+    def test_deve_permitir_agendar_no_ultimo_horario_possivel(self):
+        consulta = Consulta.criar("11:30", self.medico, self.julia)
+        resultado = self.medico.agendar(consulta)
+        
+        self.assertTrue(resultado)
+
     def test_deve_retornar_texto_formatado_da_consulta(self):
         consulta = Consulta.criar("08:00", self.medico, self.julia)
 

@@ -194,3 +194,9 @@ class TestAgendamento(TestCase):
 
         with self.assertRaises(DiaIndisponivelError):
             medico.agendar(consulta_sabado)
+
+    def test_nao_deve_criar_consulta_com_formato_de_hora_invalido(self):
+        with self.assertRaises(ValueError):
+            Consulta.criar("25:00", self.medico, self.julia)
+        with self.assertRaises(ValueError):
+            Consulta.criar("abc", self.medico, self.julia)

@@ -19,16 +19,10 @@ class Paciente:
         self.telefone = telefone
 
 
-class Medico:
+class Agenda:
 
-    def __init__(self, nome: str, inicio: time, fim: time, dias_atendimento: list[DiaSemana] | None = None) -> None:
+    def __init__(self, inicio: time, fim: time, dias_atendimento: list[DiaSemana] | None = None) -> None:
 
-        if inicio > fim:
-            raise TurnoInvalidoError("O termino do turno nao pode ser anterior ao inicio.")
-        if inicio == fim:
-            raise TurnoInvalidoError("O turno nao pode ter duracao de zero minutos.")
-
-        self.nome = nome
         self.inicio = inicio
         self.fim = fim
 
@@ -43,17 +37,17 @@ class Medico:
         else:
             self.dias_atendimento = dias_atendimento
 
-        self.__agenda = []
-
-    @property
-    def agenda(self) -> tuple["Consulta"]:
-        return tuple(self.__agenda)
+        self.__consultas = []
 
     def __contains__(self, consulta_nova: "Consulta") -> bool:
-        for consulta_agendada in self.__agenda:
+        for consulta_agendada in self.__consultas:
             if consulta_nova.inicio < consulta_agendada.fim and consulta_agendada.inicio < consulta_nova.fim:
                 return True
         return False
+
+    @property
+    def consultas(self) -> tuple["Consulta"]:
+        return tuple(self.__consultas)
 
     def agendar(self, consulta: "Consulta") -> bool:
         hora_inicio_consulta = consulta.inicio.time()
@@ -67,23 +61,36 @@ class Medico:
         if dia_da_semana not in self.dias_atendimento:
             raise DiaIndisponivelError("O medico nao atende neste dia da semana.")
 
-        self.__agenda.append(consulta)
+        self.__consultas.append(consulta)
         return True
 
     def cancelar(self, consulta_id: str) -> bool:
 
-        for consulta in self.__agenda:
+        for consulta in self.__consultas:
             if consulta.id == consulta_id:
-                self.__agenda.remove(consulta)
+                self.__consultas.remove(consulta)
                 return True
         raise ConsultaNaoEncontradaError("Esta consulta nao foi encontrada na agenda do medico.")
 
     def buscar_consulta(self, consulta_id: str) -> "Consulta":
 
-        for consulta in self.__agenda:
+        for consulta in self.__consultas:
             if consulta.id == consulta_id:
                 return consulta
         raise ConsultaNaoEncontradaError("Consulta nao encontrada no sistema.")
+
+
+class Medico:
+
+    def __init__(self, nome: str, inicio: time, fim: time, dias_atendimento: list[DiaSemana] | None = None) -> None:
+
+        if inicio > fim:
+            raise TurnoInvalidoError("O termino do turno nao pode ser anterior ao inicio.")
+        if inicio == fim:
+            raise TurnoInvalidoError("O turno nao pode ter duracao de zero minutos.")
+
+        self.nome = nome
+        self.agenda = Agenda(inicio, fim, dias_atendimento)
 
 
 class Consulta:

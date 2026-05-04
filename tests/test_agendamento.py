@@ -120,6 +120,14 @@ class TestAgendamento(TestCase):
         with self.assertRaises(ConsultaNaoEncontradaError):
             self.medico.cancelar("1234")
 
+    def test_nao_deve_encontrar_consulta_apos_ser_cancelada(self):
+        consulta = Consulta.criar("08:00", self.medico, self.julia)
+        self.medico.agendar(consulta)
+        self.medico.cancelar(consulta.id)
+
+        with self.assertRaises(ConsultaNaoEncontradaError):
+            self.medico.buscar_consulta(consulta.id)
+
     def test_nao_deve_agendar_fora_do_horario(self):
         consulta = Consulta.criar("14:00", self.medico, self.julia)
 

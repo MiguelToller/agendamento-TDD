@@ -162,6 +162,16 @@ class TestAgendamento(TestCase):
         with self.assertRaises(HorarioIndisponivelError):
             self.medico.agenda.agendar(consulta)
 
+    def test_nao_deve_agendar_consulta_que_troque_o_dia(self):
+        medico = Medico(nome="Gabriel",
+                        inicio=time(18, 0),
+                        fim=time(23, 59),
+                        dias_atendimento=TODOS_OS_DIAS)
+        consulta = Consulta.criar("23:45", medico, self.julia)
+
+        with self.assertRaises(HorarioIndisponivelError):
+            medico.agenda.agendar(consulta)
+
     def test_nao_deve_criar_medico_com_turno_invertido(self):
         with self.assertRaises(TurnoInvalidoError):
             Medico(

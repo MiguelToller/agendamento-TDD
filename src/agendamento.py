@@ -50,14 +50,16 @@ class Agenda:
         return tuple(self.__consultas)
 
     def agendar(self, consulta: "Consulta") -> bool:
-        hora_inicio_consulta = consulta.inicio.time()
-        hora_fim_consulta = consulta.fim.time()
-        dia_da_semana = DiaSemana(consulta.inicio.weekday())
+        data_da_consulta = consulta.inicio.date()
+        
+        limite_inicio_turno = datetime.combine(data_da_consulta, self.inicio)
+        limite_fim_turno = datetime.combine(data_da_consulta, self.fim)
 
-        if hora_inicio_consulta < self.inicio or hora_fim_consulta > self.fim:
+        if consulta.inicio < limite_inicio_turno or consulta.fim > limite_fim_turno:
             raise HorarioIndisponivelError("O medico nao atende neste horario.")
         if consulta in self:
             raise ConflitoHorarioError("O medico ja possui um paciente neste horario.")
+        dia_da_semana = DiaSemana(consulta.inicio.weekday())
         if dia_da_semana not in self.dias_atendimento:
             raise DiaIndisponivelError("O medico nao atende neste dia da semana.")
 

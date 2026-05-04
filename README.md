@@ -58,5 +58,4 @@ Atualmente, 22% do tempo das secretárias em clínicas parceiras é gasto resolv
 * **Modelagem C4:** Recomenda-se o desenho da solução utilizando os níveis de Contexto, Contêineres e Componentes para mapear o fluxo arquitetural.
 * **Design by Contract (DbC) e Fail-Fast:** O software deve operar sob contratos claros (pré-condições). Utilize a estratégia fail-fast no topo dos métodos para garantir que dados inválidos não sejam processados.
 * **Encapsulamento e SRP (SOLID):** O estado interno dos objetos deve ser protegido (ex: uso de tuplas no lugar de listas abertas). As classes devem possuir responsabilidade única (ex: o Médico delega o controle matemático de tempo para uma entidade própria de **Agenda**).
-"""
 

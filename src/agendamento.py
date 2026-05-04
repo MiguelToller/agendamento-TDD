@@ -92,7 +92,24 @@ class Medico:
             raise TurnoInvalidoError("O turno nao pode ter duracao de zero minutos.")
 
         self.nome = nome
-        self.agenda = Agenda(inicio, fim, dias_atendimento)
+        self.__agenda = Agenda(inicio, fim, dias_atendimento)
+        
+    def agendar(self, consulta: "Consulta") -> bool:
+        return self.__agenda.agendar(consulta)
+
+    def cancelar(self, consulta_id: str) -> bool:
+        return self.__agenda.cancelar(consulta_id)
+
+    def buscar_consulta(self, consulta_id: str) -> "Consulta":
+        return self.__agenda.buscar_consulta(consulta_id)
+
+    @property
+    def consultas(self) -> tuple["Consulta"]:
+        return self.__agenda.consultas
+    
+    @property
+    def dias_atendimento(self) -> list[DiaSemana]:
+        return self.__agenda.dias_atendimento
 
 
 class Consulta:

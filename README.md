@@ -1,4 +1,3 @@
-## PRD: Módulo de Agendamento Inteligente (MVP)
 
 ---
 
@@ -15,10 +14,11 @@ Atualmente, 22% do tempo das secretárias em clínicas parceiras é gasto resolv
 
 ### 2. Requisitos Funcionais (RF)
 
-* **RF01 - Configuração de Grade:** O sistema deve permitir definir o horário de início e fim da jornada de um médico.
-* **RF02 - Validação de Horário:** Não deve ser possível agendar um paciente fora do horário de trabalho do médico.
-* **RF03 - Prevenção de Sobreposição:** O sistema deve impedir dois agendamentos no mesmo horário para o mesmo médico.
+* **RF01 - Configuração de Grade:** O sistema deve permitir definir o horário de início e fim da jornada de um médico, bem como os seus dias de atendimento na semana.
+* **RF02 - Validação de Horário e Dia:** Não deve ser possível agendar um paciente fora do horário de trabalho do médico, nem em dias em que ele não atende (folgas). O sistema também deve bloquear consultas que comecem no turno, mas terminem no dia seguinte (virada da noite).
+* **RF03 - Prevenção de Sobreposição:** O sistema deve impedir dois agendamentos no mesmo horário (conflito total ou parcial) para a mesma agenda.
 * **RF04 - Duração Fixa:** Cada consulta possui uma duração padrão (ex: 30 minutos) que poderá ser alterada em outra história.
+* **RF05 - Gestão de Pacientes:** O sistema deve registrar o agendamento atrelado a uma entidade rica de **Paciente** (com ID único, CPF e telefone), abandonando o uso de tipos primitivos (strings) para identificação.
 
 ---
 
@@ -33,18 +33,30 @@ Atualmente, 22% do tempo das secretárias em clínicas parceiras é gasto resolv
 **Cenário 2: Erro por fora do horário de atendimento**
 * **Dado** que o Médico "Dr. House" atende das 08:00 às 12:00
 * **Quando** eu tentar agendar uma consulta para às 14:00
-* **Então** o sistema deve rejeitar o agendamento informando que o médico não está disponível.
+* **Então** o sistema deve rejeitar o agendamento informando que o médico não atende neste horário.
 
 **Cenário 3: Erro por conflito de horário (Sobreposição)**
-* **Dado** que o Médico "Dr. House" já possui uma consulta às 10:00
-* **Quando** eu tentar agendar uma nova consulta às 10:00 para o mesmo médico
+* **Dado** que a agenda do "Dr. House" já possui uma consulta às 10:00 (duração de 30 min)
+* **Quando** eu tentar agendar uma nova consulta às 10:15 para a mesma agenda
 * **Então** o sistema deve exibir um erro de "Conflito de Horário".
+
+**Cenário 4: Erro por agendamento em dia de folga**
+* **Dado** que o "Dr. House" atende apenas de Segunda, Quarta e Sexta
+* **Quando** eu tentar agendar uma consulta para um Sábado
+* **Então** o sistema deve rejeitar a requisição informando erro de dia indisponível.
+
+**Cenário 5: Erro por invasão de madrugada (Virada de dia)**
+* **Dado** que o "Dr. Coruja" atende até às 23:59
+* **Quando** eu tentar agendar uma consulta às 23:45 (com término previsto para as 00:15 do dia seguinte)
+* **Então** o sistema deve bloquear o agendamento por ultrapassar o limite do turno.
 
 ---
 
 ### 4. Diretrizes Técnicas e Regras do Desafio
 
-* **TDD (Test-Driven Development):** É obrigatório o desenvolvimento guiado por testes. O código de produção só deve ser escrito após a existência de um teste que falhe, garantindo que cada regra de negócio seja validada desde a sua concepção.
-* **Modelagem C4:** Recomenda-se o desenho da solução utilizando os níveis de Contexto e Componentes do modelo C4. Isso garante que a estrutura do sistema seja compreendida antes da execução.
-* **Design by Contract (DbC):** O software deve operar sob contratos claros de pré-condições, pós-condições e invariantes. Utilize a estratégia fail-fast para garantir que o sistema não processe dados em estado inválido.
-* **Encapsulamento e Proteção de Estado:** O estado interno dos objetos deve ser protegido. Utilize propriedades e tipos imutáveis (como tuplas para coleções) para evitar o vazamento de lógica de domínio e garantir que as regras de negócio sejam centralizadas em seus respectivos objetos.
+* **TDD (Test-Driven Development):** É obrigatório o desenvolvimento guiado por testes. O código de produção só deve ser escrito após a existência de um teste que falhe.
+* **Modelagem C4:** Recomenda-se o desenho da solução utilizando os níveis de Contexto, Contêineres e Componentes para mapear o fluxo arquitetural.
+* **Design by Contract (DbC) e Fail-Fast:** O software deve operar sob contratos claros (pré-condições). Utilize a estratégia fail-fast no topo dos métodos para garantir que dados inválidos não sejam processados.
+* **Encapsulamento e SRP (SOLID):** O estado interno dos objetos deve ser protegido (ex: uso de tuplas no lugar de listas abertas). As classes devem possuir responsabilidade única (ex: o Médico delega o controle matemático de tempo para uma entidade própria de **Agenda**).
+"""
+

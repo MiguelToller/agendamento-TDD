@@ -158,6 +158,11 @@ class TestAgendamento(TestCase):
         with self.assertRaises(ConflitoHorarioError):
             self.medico.agendar(consulta_2)
 
+    def test_nao_deve_agendar_exatamente_no_horario_fim(self):
+        consulta = Consulta.criar("12:00", self.medico, self.julia)
+        with self.assertRaises(HorarioIndisponivelError):
+            self.medico.agendar(consulta)
+
     def test_nao_deve_criar_medico_com_turno_invertido(self):
         with self.assertRaises(TurnoInvalidoError):
             Medico(

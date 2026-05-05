@@ -1,5 +1,6 @@
 from datetime import time, datetime, timedelta
 from dataclasses import dataclass, field
+from typing import ClassVar
 from src.exceptions import (
     HorarioIndisponivelError,
     ConflitoHorarioError,
@@ -112,16 +113,20 @@ class Medico:
         return self.__agenda.dias_atendimento
 
 
+@dataclass
 class Consulta:
 
-    DURACAO_CONSULTA_MIN = 30
+    DURACAO_CONSULTA_MIN: ClassVar[int] = 30
 
-    def __init__(self, data_hora: datetime, medico: Medico, paciente: Paciente) -> None:
-        self.id = str(uuid.uuid4())
-        self.medico = medico
-        self.paciente = paciente
-        self.inicio = data_hora
-        self.fim = data_hora + timedelta(minutes=self.DURACAO_CONSULTA_MIN)
+    inicio: datetime
+    medico: "Medico"
+    paciente: "Paciente"
+
+    id: str = field(default_factory=lambda: str(uuid.uuid4()), init=False)
+    fim: datetime = field(init=False)
+
+    def __post_init__(self):
+        self.fim = self.inicio + timedelta(minutes=self.DURACAO_CONSULTA_MIN)
 
     def __str__(self) -> str:
         data_formatada = self.inicio.strftime("%d/%m/%Y")

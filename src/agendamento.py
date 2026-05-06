@@ -7,6 +7,7 @@ from src.exceptions import (
     TurnoInvalidoError,
     ConsultaNaoEncontradaError,
     DiaIndisponivelError,
+    PacienteInvalidoError,
 )
 import uuid
 from src.enums import DiaSemana
@@ -18,6 +19,12 @@ class Paciente:
     cpf: str
     telefone: str
     id: str = field(default_factory=lambda: str(uuid.uuid4()), init=False)
+
+    def __post_init__(self):
+        if not self.nome.strip():
+            raise PacienteInvalidoError("O nome do paciente não pode estar vazio.")
+        if not self.cpf.strip():
+            raise PacienteInvalidoError("O CPF não pode estar vazio.")
 
 
 class Agenda:
@@ -52,7 +59,7 @@ class Agenda:
 
     def agendar(self, consulta: "Consulta") -> bool:
         data_da_consulta = consulta.inicio.date()
-        
+
         limite_inicio_turno = datetime.combine(data_da_consulta, self.inicio)
         limite_fim_turno = datetime.combine(data_da_consulta, self.fim)
 
@@ -94,7 +101,7 @@ class Medico:
 
         self.nome = nome
         self.__agenda = Agenda(inicio, fim, dias_atendimento)
-        
+
     def agendar(self, consulta: "Consulta") -> bool:
         return self.__agenda.agendar(consulta)
 
@@ -107,7 +114,7 @@ class Medico:
     @property
     def consultas(self) -> tuple["Consulta"]:
         return self.__agenda.consultas
-    
+
     @property
     def dias_atendimento(self) -> list[DiaSemana]:
         return self.__agenda.dias_atendimento

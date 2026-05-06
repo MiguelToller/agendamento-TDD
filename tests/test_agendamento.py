@@ -7,6 +7,7 @@ from src.exceptions import (
     TurnoInvalidoError,
     ConsultaNaoEncontradaError,
     DiaIndisponivelError,
+    PacienteInvalidoError,
 )
 from src.enums import DiaSemana
 
@@ -163,10 +164,7 @@ class TestAgendamento(TestCase):
             self.medico.agendar(consulta)
 
     def test_nao_deve_agendar_consulta_que_troque_o_dia(self):
-        medico = Medico(nome="Gabriel",
-                        inicio=time(18, 0),
-                        fim=time(23, 59),
-                        dias_atendimento=TODOS_OS_DIAS)
+        medico = Medico(nome="Gabriel", inicio=time(18, 0), fim=time(23, 59), dias_atendimento=TODOS_OS_DIAS)
         consulta = Consulta.criar("23:45", medico, self.julia)
 
         with self.assertRaises(HorarioIndisponivelError):
@@ -209,3 +207,11 @@ class TestAgendamento(TestCase):
             Consulta.criar("25:00", self.medico, self.julia)
         with self.assertRaises(ValueError):
             Consulta.criar("abc", self.medico, self.julia)
+
+    def test_nao_deve_criar_paciente_sem_nome(self):
+        with self.assertRaises(PacienteInvalidoError):
+            Paciente(nome="", cpf="111.111.111-11", telefone="7777-7777")
+
+    def test_nao_deve_criar_paciente_sem_cpf(self):
+        with self.assertRaises(PacienteInvalidoError):
+            Paciente(nome="Julia", cpf=" ", telefone="7777-7777")

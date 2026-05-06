@@ -26,3 +26,9 @@ class DiaIndisponivelError(Exception):
     """Lancada quando uma consulta e marcada em um dia de folga."""
 
     pass
+
+
+class PacienteInvalidoError(Exception):
+    """Lancada quando o paciente e criado com nome ou cpf invalido."""
+
+    pass
